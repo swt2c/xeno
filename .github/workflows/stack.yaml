@@ -28,23 +28,29 @@ jobs:
           - os: ubuntu-latest
             stack-yaml: stack-nightly.yaml
             extra-args: ""
-          - os: macos-latest
+          - os: macos-13
             stack-yaml: stack-lts-17.yaml
             extra-args: ""
-          - os: macos-latest
+          - os: macos-13
             stack-yaml: stack-lts-18.yaml
             extra-args: ""
-          - os: macos-latest
+          - os: macos-13
             stack-yaml: stack-nightly.yaml
             extra-args: ""
     steps:
       - name: Clone project
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           submodules: 'true'
 
+      - name: Setup Haskell
+        if: runner.os == 'macOS'
+        uses: haskell-actions/setup@v2
+        with:
+          enable-stack: true
+
       - name: Cache dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: |
             ~/.stack
@@ -52,6 +58,11 @@ jobs:
           key: ${{ runner.os }}-${{ matrix.resolver }}-haskell-${{ hashFiles('stack.yaml') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.resolver }}-haskell-
+
+      - name: Install dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get install -y libbz2-dev
 
       - name: Build and run tests
         shell: bash
