@@ -29,6 +29,7 @@ import qualified Data.ByteString.Char8 as S8
 import qualified Data.ByteString.Unsafe as SU
 import           Data.Char (isSpace)
 import           Data.Functor.Identity (Identity(..))
+import           Data.Int (Int64)
 import           Data.Semigroup ()
 import           Data.STRef (newSTRef, modifySTRef', readSTRef)
 import           Data.Word (Word8, Word64)
@@ -402,7 +403,7 @@ elemIndexFrom c str offset = fmap (+ offset) (S.elemIndex c (S.drop offset str))
 -- Character types
 
 isSpaceChar :: Word8 -> Bool
-isSpaceChar = testBit (0b100000000000000000010011000000000 :: Int) . fromIntegral
+isSpaceChar = testBit (0b100000000000000000010011000000000 :: Int64) . fromIntegral
 --                       |                  |  ||  bits:
 --                       |                  |  |+-- 9
 --                       |                  |  +--- 10
